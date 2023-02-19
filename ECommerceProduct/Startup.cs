@@ -47,7 +47,6 @@ namespace ECommerceProduct
                   };
               });
 
-
             services.AddControllers(setupAction =>
             {
                 setupAction.ReturnHttpNotAcceptable = true;
@@ -64,6 +63,7 @@ namespace ECommerceProduct
             var serviceProvider = services.BuildServiceProvider();
             var logger1 = serviceProvider.GetService<ILogger<ProductController>>();
             services.AddSingleton(typeof(ILogger), logger1);
+       
             services.AddDbContext<ProductDetailsContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));

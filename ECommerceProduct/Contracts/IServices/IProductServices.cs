@@ -4,6 +4,7 @@ using ECommerceProduct.Entities.Model;
 using ECommerceProduct.Helper;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace ECommerceProduct.Contracts
 {
@@ -21,6 +22,28 @@ namespace ECommerceProduct.Contracts
         /// <param name="guids"></param>
         /// <returns></returns>
         IEnumerable<Product> GetProductsByIds(String guids);
+        /// <summary>
+        /// Check the productQuanity is available or not
+        /// </summary>
+        /// <param name="quantity"></param>
+        /// <param name="productId"></param>
+        /// <returns></returns>
+        bool CheckProdcutCount(int quantity, Guid productId);
+        /// <summary>
+        /// Adding the product to the wishlist
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="productId"></param>
+        /// <param name="userId"></param>
+        /// <param name="wishlistName"></param>
+        /// <returns></returns>
+        void AddToWishList(Guid productId,string token,Guid userId,string wishlistName);
+        /// <summary>
+        /// Adding the product to the cart
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <param name="quantity"></param>
+        void AddToCart(Guid productId,int quantity,string token);
 
         /// <summary>
         /// Set visibility for the product
@@ -59,5 +82,11 @@ namespace ECommerceProduct.Contracts
         /// </summary>
         /// <param name="productId"></param>
         void DeleteProduct(Guid productId);
+        /// <summary>
+        /// Get the userid of the user
+        /// </summary>
+        /// <param name="User"></param>
+        /// <returns></returns>
+        string GetLoggedId(ClaimsPrincipal User);
     }
 }

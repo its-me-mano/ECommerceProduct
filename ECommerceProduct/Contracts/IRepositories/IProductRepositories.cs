@@ -22,6 +22,13 @@ namespace ECommerceProduct.Contracts
         /// <returns></returns>
         Product GetProduct(Guid userId);
         /// <summary>
+        /// Check the productQuanity is available or not
+        /// </summary>
+        /// <param name="quantity"></param>
+        /// <param name="productId"></param>
+        /// <returns></returns>
+        bool CheckProdcutCount(int quantity,Guid productId);
+        /// <summary>
         /// It will give the opposite of the current visibility id
         /// </summary>
         /// <param name=""></param>

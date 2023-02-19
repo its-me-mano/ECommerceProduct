@@ -63,8 +63,8 @@ namespace ECommerceProduct.Repositories
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public Product GetProduct(Guid userId) {
-            return _context.Products.Where(a => a.Id.Equals(userId)).FirstOrDefault();
+        public Product GetProduct(Guid productId) {
+            return _context.Products.Where(a => a.Id.Equals(productId)).FirstOrDefault();
         }
 
         ///<summary>
@@ -76,6 +76,16 @@ namespace ECommerceProduct.Repositories
         {
             Product Data = _context.Products.Where(a => a.Id == userId).FirstOrDefault();
             _context.SaveChanges();
+        }
+        /// <summary>
+        /// Check the productQuanity is available or not
+        /// </summary>
+        /// <param name="quantity"></param>
+        /// <param name="productId"></param>
+        /// <returns></returns>
+        public bool CheckProdcutCount(int quantity, Guid productId)
+        {
+            return _context.Products.Where(a => a.Id == productId).FirstOrDefault().ProductCount >= quantity ? true : false;
         }
         /// <summary>
         /// Delete the product

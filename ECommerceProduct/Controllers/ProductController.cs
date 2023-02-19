@@ -41,7 +41,7 @@ namespace ECommerceProduct.Controllers
         /// <response code="401">The user is not authorized.</response>
         /// <response code="403">user doesn't have permisssion to access this resource</response>
         [Authorize]
-        [SwaggerOperation("GetAllUser")]
+        [SwaggerOperation("GetProduct")]
         [SwaggerResponse(statusCode: 200, "All the address book fetched successfully")]
         [SwaggerResponse(statusCode: 401, "The user  is not authorized", typeof(ErrorDto))]
         [SwaggerResponse(statusCode: 403, "user doesn't have permisssion to access this resource")]
@@ -55,7 +55,7 @@ namespace ECommerceProduct.Controllers
                 PageNo = PageNo,
                 PageSize = PageSize,
                 OrderBy = OrderBy,
-                OrderType = OrderType,
+                OrderType = OrderType,  
                 category = Category,
                 searchQuery = searchQuery
             };
@@ -70,22 +70,23 @@ namespace ECommerceProduct.Controllers
         /// Set the Visibility
         /// </summary>
         /// <remarks>In this route,we can set the visibility of the product</remarks>
-        /// <response code="200">All the address book fetched successfully</response>
+        /// <response code="200">Changes visibility successfully</response>
         /// <response code="400">The user input is not valid.</response>
         /// <response code="401">The user is not authorized.</response>
         /// <response code="403">user doesn't have permisssion to access this resource</response>
         [SwaggerOperation("ChangeVisibility")]
-        [SwaggerResponse(statusCode: 200, "All the address book fetched successfully")]
+        [SwaggerResponse(statusCode: 200, "Changes visibility successfully")]
         [SwaggerResponse(statusCode: 401, "The user  is not authorized", typeof(ErrorDto))]
         [SwaggerResponse(statusCode: 400, "The user input is not valid", typeof(ErrorDto))]
         [SwaggerResponse(statusCode: 403, "user doesn't have permisssion to access this resource")]
         [Authorize(Roles = "Admin")]
         [HttpPut("{user-id}", Name = "ChangeVisibility")]
-        public IActionResult ChangeVisibility([FromRoute(Name = "user-id")][Required] Guid userId) {
+        public IActionResult ChangeVisibility([FromRoute(Name = "user-id")][Required] Guid productId) {
             _logger.LogInformation("ChangeVisibiltiy process has been initiated");
-            if (_service.CheckProduct(userId))
+            if (_service.CheckProduct(productId))
             {
-                _service.SetVisibility(userId);
+                _service.SetVisibility(productId);
+                _logger.LogInformation("Product visibility changed successfully");
                 return Ok("Updated Successfully");
             }
             else {
@@ -93,16 +94,17 @@ namespace ECommerceProduct.Controllers
                 return StatusCode(404, "Cound not find the product Id");
             }
         }
+
         /// <summary>
         /// Update the product Quantity
         /// </summary>
         /// <remarks>Update the product Quantity</remarks>
-        /// <response code="200">All the address book fetched successfully</response>
+        /// <response code="200">Quantity update successsfully</response>
         /// <response code="400">The user input is not valid.</response>
         /// <response code="401">The user is not authorized.</response>
         /// <response code="403">user doesn't have permisssion to access this resource</response>
-        [SwaggerOperation("ChangeVisibility")]
-        [SwaggerResponse(statusCode: 200, "All the address book fetched successfully")]
+        [SwaggerOperation("UpdateTheQuantity")]
+        [SwaggerResponse(statusCode: 200, "Quantity update successsfully")]
         [SwaggerResponse(statusCode: 401, "The user  is not authorized", typeof(ErrorDto))]
         [SwaggerResponse(statusCode: 400, "The user input is not valid", typeof(ErrorDto))]
         [SwaggerResponse(statusCode: 403, "user doesn't have permisssion to access this resource")]
@@ -122,16 +124,17 @@ namespace ECommerceProduct.Controllers
             _service.SetValuesToProduct(increment, decrement, value, product, productId);
             return StatusCode(200, "quantity of the product has been updated");
         }
+
         /// <summary>
-        /// Update the product Quantity
+        /// delete product
         /// </summary>
-        /// <remarks>Update the product Quantity</remarks>
-        /// <response code="200">All the address book fetched successfully</response>
+        /// <remarks>delete the product</remarks>
+        /// <response code="200">deleted the product</response>
         /// <response code="400">The user input is not valid.</response>
         /// <response code="401">The user is not authorized.</response>
         /// <response code="403">user doesn't have permisssion to access this resource</response>
-        [SwaggerOperation("ChangeVisibility")]
-        [SwaggerResponse(statusCode: 200, "All the address book fetched successfully")]
+        [SwaggerOperation("DeleteProduct")]
+        [SwaggerResponse(statusCode: 200, "Deleted the product successfully")]
         [SwaggerResponse(statusCode: 401, "The user  is not authorized", typeof(ErrorDto))]
         [SwaggerResponse(statusCode: 400, "The user input is not valid", typeof(ErrorDto))]
         [SwaggerResponse(statusCode: 403, "user doesn't have permisssion to access this resource")]
@@ -145,12 +148,89 @@ namespace ECommerceProduct.Controllers
             _service.DeleteProduct(productId);
             return StatusCode(200, "Product has been deleted successfully");
         }
-
+        /// <summary>
+        /// GetProducts
+        /// </summary>
+        /// <remarks>Get the products</remarks>
+        /// <response code="200">fetch the product successfully</response>
+        /// <response code="400">The user input is not valid.</response>
+        /// <response code="401">The user is not authorized.</response>
+        /// <response code="403">user doesn't have permisssion to access this resource</response>
+        [SwaggerOperation("GetProducts")]
+        [SwaggerResponse(statusCode: 200, "fetch the product successfully")]
+        [SwaggerResponse(statusCode: 401, "The user  is not authorized", typeof(ErrorDto))]
+        [SwaggerResponse(statusCode: 400, "The user input is not valid", typeof(ErrorDto))]
+        [SwaggerResponse(statusCode: 403, "user doesn't have permisssion to access this resource")]
         [Authorize]
         [HttpGet("getproducts")]
-        public IActionResult GetProductByIds([FromQuery(Name = "queryString")] String guids) {
+        public IActionResult GetProductByIds([FromQuery(Name = "queryString")] string guids) {
             IEnumerable<Product> products = _service.GetProductsByIds(guids);
             return StatusCode(200, products);    
+        }
+        /// <summary>
+        /// AddWishList
+        /// </summary>
+        /// <remarks>Product add to wishlist </remarks>
+        /// <response code="200">Deleted the product successfully</response>
+        /// <response code="400">The user input is not valid.</response>
+        /// <response code="401">The user is not authorized.</response>
+        /// <response code="403">user doesn't have permisssion to access this resource</response>
+        [SwaggerOperation("AddWishList")]
+        [SwaggerResponse(statusCode: 200, "Deleted the product successfully")]
+        [SwaggerResponse(statusCode: 401, "The user  is not authorized", typeof(ErrorDto))]
+        [SwaggerResponse(statusCode: 400, "The user input is not valid", typeof(ErrorDto))]
+        [SwaggerResponse(statusCode: 403, "user doesn't have permisssion to access this resource")]
+        [Authorize]
+        [HttpPost("addwishlist")]
+        public IActionResult AddToWishList([FromQuery(Name = "product-id")] string productId,[FromQuery(Name ="wishlist-name")] string wishlistName){
+            _logger.LogInformation("Add to wishlist process has been initiated");
+             string token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer", "");
+            Guid userId = new Guid(_service.GetLoggedId(User));
+            _service.AddToWishList(new Guid(productId),token,userId,wishlistName);
+            _logger.LogInformation("Product add to wishlist successfully");
+            return StatusCode(200, "Product add to wishlist successfully");
+        }
+        /// <summary>
+        /// AddCart
+        /// </summary>
+        /// <remarks>Proudct add to cart</remarks>
+        /// <response code="200">Proudct add to cart successfully</response>
+        /// <response code="400">The user input is not valid.</response>
+        /// <response code="401">The user is not authorized.</response>
+        /// <response code="403">user doesn't have permisssion to access this resource</response>
+        [SwaggerOperation("AddCart")]
+        [SwaggerResponse(statusCode: 200, "Proudct add to cart successfully")]
+        [SwaggerResponse(statusCode: 401, "The user  is not authorized", typeof(ErrorDto))]
+        [SwaggerResponse(statusCode: 400, "The user input is not valid", typeof(ErrorDto))]
+        [SwaggerResponse(statusCode: 403, "user doesn't have permisssion to access this resource")]
+        [Authorize]
+        [HttpPost("addcart")]
+        public IActionResult AddToCart([FromQuery(Name = "product-id")] string productId, [FromQuery(Name = "quantity")] int quantity) {
+            _logger.LogInformation("Adding to cart process has been initiated");
+            string token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer", "");
+            _service.AddToCart(new Guid(productId), quantity,token);
+            return StatusCode(200, "Product add to cart successfully");
+        }
+        /// <summary>
+        /// ProductCountCehck
+        /// </summary>
+        /// <remarks>Check quantiyt of the product</remarks>
+        /// <response code="200">Product count checked</response>
+        /// <response code="400">The user input is not valid.</response>
+        /// <response code="401">The user is not authorized.</response>
+        /// <response code="403">user doesn't have permisssion to access this resource</response>
+        [SwaggerOperation("ProductCountCheck")]
+        [SwaggerResponse(statusCode: 200, "Product count checked")]
+        [SwaggerResponse(statusCode: 401, "The user  is not authorized", typeof(ErrorDto))]
+        [SwaggerResponse(statusCode: 400, "The user input is not valid", typeof(ErrorDto))]
+        [SwaggerResponse(statusCode: 403, "user doesn't have permisssion to access this resource")]
+        [Authorize]
+        [HttpGet("countcheck")]
+        public IActionResult CheckProductCount([FromQuery(Name = "quantity")] int quantity, [FromQuery(Name = "product-id")] string productId)
+        {
+            _logger.LogInformation("Checking product count has been initiated");
+           bool check=_service.CheckProdcutCount(quantity, new Guid(productId));
+            return StatusCode(200, check);
         }
 
     }
